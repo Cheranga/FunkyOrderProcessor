@@ -107,7 +107,6 @@ module kvPolicies 'keyvault/policies.bicep' = {
     storageName: sgName
   }
   dependsOn: [
-    app
     appInsights
     keyVault
     storageAccount
