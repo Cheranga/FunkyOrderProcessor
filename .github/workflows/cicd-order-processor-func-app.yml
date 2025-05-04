@@ -36,7 +36,7 @@ jobs:
       - build_and_publish
     uses: ./.github/workflows/deploy-function-app.yml
     with:
-      applicationName: funky-opf
+      applicationName: orderproc
       location: australiasoutheast
       versionNumber: ${{ needs.generate_version_number.outputs.VersionNumber }}
       environment: dev
