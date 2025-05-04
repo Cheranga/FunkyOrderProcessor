@@ -69,18 +69,18 @@ jobs:
             environment=${{ inputs.environment }}
             location=${{ inputs.location }}
             
-#      - name: Create zipped function app package
-#        run: |
-#          cd ${{ inputs.versionNumber }}
-#          zip -r ../functionapp.zip .
-#          cd ..
-#    
-#      - name: Verify function app package exists
-#        run: |
-#          if [ ! -f "functionapp.zip" ]; then
-#            echo "❌ functionapp.zip not found!"
-#            exit 1
-#          fi
+      - name: Create zipped function app package
+        run: |
+          cd ${{ inputs.versionNumber }}
+          zip -r ../functionapp.zip .
+          cd ..
+
+      - name: Verify function app package exists
+        run: |
+          if [ ! -f "functionapp.zip" ]; then
+            echo "❌ functionapp.zip not found!"
+            exit 1
+          fi
 #    
 #      - name: Deploy using Zip Deploy
 #        run: |
@@ -121,7 +121,7 @@ jobs:
         uses: Azure/functions-action@v1
         with:
           app-name: "cchat-fn-${{ inputs.applicationName }}-${{ inputs.environment }}"
-          package: ${{ inputs.versionNumber }}  
+          package: functionapp.zip  
           slot-name: 'production'
             
 #      - name: "Deploy Azure Function App"
