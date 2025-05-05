@@ -1,0 +1,52 @@
+name: Build and Publish Artifacts
+
+on:
+  workflow_call:
+    inputs:
+      project-path:
+        type: string
+        required: true
+        description: Path to the csproj file
+      deploy-templates-path:
+        type: string
+        required: true
+        description: Path to the deployment templates
+      versionNumber:
+        type: string
+        required: true
+        description: Version number
+
+permissions:
+  contents: read
+        
+jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4      
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: |
+            8.0.x     
+            
+      - name: Create Artifact
+        shell: bash
+        run: dotnet publish ${{ inputs.project-path }} -c Release -o ${{ inputs.versionNumber }}
+
+      - name: Publish Artifact - App
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ inputs.versionNumber }}
+          path: ${{ inputs.versionNumber }}
+          if-no-files-found: error
+
+      - name: Publish Artifact - Templates
+        uses: actions/upload-artifact@v4
+        with:
+          name: deploy
+          path: ${{ inputs.deploy-templates-path }}
+          if-no-files-found: error
