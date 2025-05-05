@@ -4,6 +4,7 @@ concurrency: Order Processor Func App Create Release for PR
 on:
   pull_request:
     branches: [ 'main' ]
+  workflow_dispatch:
     
 jobs:
      
