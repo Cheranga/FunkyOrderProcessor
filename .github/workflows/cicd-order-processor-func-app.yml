@@ -5,12 +5,6 @@ on:
   pull_request:
     branches: [ 'main' ]
     
-env:
-  project-path: OrderProcessorFuncApp/OrderProcessorFuncApp.csproj
-  deploy-templates-path: ./.github/bicep-order-processor-func-app
-  applicationName: orderproc
-  location: australiasoutheast
-        
 jobs:
      
   generate_version_number:
@@ -31,8 +25,8 @@ jobs:
       - generate_version_number
     uses: ./.github/workflows/build-and-publish-artifacts.yml
     with:
-        project-path: '${{ env.project-path }}'
-        deploy-templates-path: '${{ env.deploy-templates-path }}'
+        project-path: 'OrderProcessorFuncApp/OrderProcessorFuncApp.csproj'
+        deploy-templates-path: './.github/bicep-order-processor-func-app'
         versionNumber: ${{ needs.generate_version_number.outputs.VersionNumber }}
           
   DEV:
@@ -42,8 +36,8 @@ jobs:
       - build_and_publish
     uses: ./.github/workflows/deploy-function-app.yml
     with:
-      applicationName: ${{ env.applicationName }}
-      location: ${{ env.location }}
+      applicationName: 'orderproc'
+      location: 'australiasoutheast'
       versionNumber: ${{ needs.generate_version_number.outputs.VersionNumber }}
       environment: dev
     secrets:
