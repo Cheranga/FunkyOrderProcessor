@@ -63,7 +63,16 @@ jobs:
             appName=${{ env.applicationName }}
             version=${{ needs.generate_version_number.outputs.VersionNumber }}
             environment=dev
-            location=australiasoutheast         
+            location=australiasoutheast        
+            
+      - name: Deploy using Zip Deploy
+        run: |
+          az functionapp deployment source config-zip \
+            --resource-group cchat-rg-orderproc-dev \
+            --name cchat-fn-orderproc-dev \
+            --src ${{ needs.generate_version_number.outputs.VersionNumber }} \
+            --timeout 600
+            
 
       - name: Logout from Azure
         uses: azure/cli@v2
