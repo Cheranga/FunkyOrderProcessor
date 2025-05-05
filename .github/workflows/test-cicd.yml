@@ -4,6 +4,7 @@ concurrency: testcicd
 on:
   pull_request:
     branches: [ 'main' ]
+  workflow_dispatch:
     
 env:
  project-path: OrderProcessorFuncApp/OrderProcessorFuncApp.csproj
