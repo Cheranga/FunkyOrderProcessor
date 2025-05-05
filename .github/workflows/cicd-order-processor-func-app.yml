@@ -39,5 +39,8 @@ jobs:
       applicationName: orderproc
       location: australiasoutheast
       versionNumber: ${{ needs.generate_version_number.outputs.VersionNumber }}
-      environment: dev              
+      environment: dev
+    secrets:
+      credentials: ${{ secrets.AZURE_CREDENTIALS }}
+      subscriptionId: ${{ secrets.SUBSCRIPTION_ID }}
           

@@ -23,12 +23,19 @@ on:
         required: true
         description: Version number to track deployments
         
+    secrets:
+      subscriptionId:
+        required: true
+        description: Azure subscription id
+      credentials:
+        required: true
+        description: Azure service principal details used to provision Azure resources
+        
 jobs:
   provisioning:
     name: Provisioning
     runs-on: ubuntu-latest
-    environment:
-      name: ${{ inputs.environment }}
+    environment: ${{ inputs.environment }}
     steps:      
       - name: Download deployment artifacts
         uses: actions/download-artifact@v4
@@ -45,7 +52,7 @@ jobs:
       - name: Login to Azure
         uses: azure/login@v2
         with:
-          creds: ${{ secrets.AZURE_CREDENTIALS }}
+          creds: ${{ secrets.credentials }}
           
       - name: Provision Azure Resources
         uses: azure/arm-deploy@v2
@@ -54,7 +61,7 @@ jobs:
           deploymentName: "${{ env.ARTIFACT_NAME }}${{inputs.environment}}"
           scope: subscription
           region: ${{ inputs.location }}
-          subscriptionId: ${{ secrets.SUBSCRIPTION_ID }}
+          subscriptionId: ${{ secrets.subscriptionId }}
           template: deploy/main.bicep
           parameters: >
             appName=${{ inputs.applicationName }}
