@@ -56,18 +56,25 @@ jobs:
           path: ${{ env.deploy-templates-path }}
           if-no-files-found: error
   
-#  DEV:
-#    name: DEV
-#    needs:
-#      - generate_version_number
-#      - build
-#    uses: ./.github/workflows/deploy-function-app.yml
-#    with:
-#      applicationName: orderproc
-#      location: australiasoutheast
-#      versionNumber: ${{ needs.generate_version_number.outputs.VersionNumber }}
-#      environment: dev
-#    secrets:
-#      credentials: ${{ secrets.AZURE_CREDENTIALS }}
-#      subscriptionId: ${{ secrets.SUBSCRIPTION_ID }}              
+  DEV:
+    name: DEV
+    runs-on: ubuntu-latest
+    environment: 
+      name: dev
+    needs:
+      - generate_version_number
+      - build
+    steps:      
+      - name: Login to Azure
+        uses: azure/login@v2
+        with:
+          creds: ${{ env.AZURE_CREDENTIALS }}
+          
+      - name: Logout from Azure
+        uses: azure/cli@v2
+        with:
+          inlineScript:
+            az logout   
+
+        
           
