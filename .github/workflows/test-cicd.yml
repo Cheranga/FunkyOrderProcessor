@@ -3,7 +3,7 @@ concurrency: testcicd
 
 on:
   pull_request:
-    branches: [ 'mainblah' ]
+    branches: [ 'main' ]
   workflow_dispatch:
     
 env:
@@ -64,7 +64,10 @@ jobs:
             appName=${{ env.applicationName }}
             version=${{ needs.generate_version_number.outputs.VersionNumber }}
             environment=dev
-            location=australiasoutheast        
+            location=australiasoutheast     
+            
+      - name: Show files in published folder
+        run: ls -R ${{ needs.generate_version_number.outputs.VersionNumber }}/            
             
       - name: 'Run Azure Functions Action'
         uses: Azure/functions-action@v1
