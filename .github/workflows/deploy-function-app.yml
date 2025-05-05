@@ -50,7 +50,7 @@ jobs:
           path: ${{ inputs.versionNumber }}
           
       - name: Unzip downloaded archive
-        run: unzip ${{ inputs.versionNumber }}.zip -d extracted-app          
+        run: unzip ${{ inputs.versionNumber }} -d extracted-app          
           
       - name: Login to Azure
         uses: azure/login@v2
