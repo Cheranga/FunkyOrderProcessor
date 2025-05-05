@@ -4,6 +4,12 @@ concurrency: Order Processor Func App Create Release for PR
 on:
   pull_request:
     branches: [ 'main' ]
+    
+env:
+  project-path: OrderProcessorFuncApp/OrderProcessorFuncApp.csproj
+  deploy-templates-path: ./.github/bicep-order-processor-func-app
+  applicationName: orderproc
+  location: australiasoutheast
         
 jobs:
      
@@ -25,8 +31,8 @@ jobs:
       - generate_version_number
     uses: ./.github/workflows/build-and-publish-artifacts.yml
     with:
-        project-path: OrderProcessorFuncApp/OrderProcessorFuncApp.csproj
-        deploy-templates-path: ./.github/bicep-order-processor-func-app
+        project-path: ${{ env.project-path }}
+        deploy-templates-path: ${{ env.deploy-templates-path }}
         versionNumber: ${{ needs.generate_version_number.outputs.VersionNumber }}
           
   DEV:
@@ -36,8 +42,8 @@ jobs:
       - build_and_publish
     uses: ./.github/workflows/deploy-function-app.yml
     with:
-      applicationName: orderproc
-      location: australiasoutheast
+      applicationName: ${{ env.applicationName }}
+      location: ${{ env.location }}
       versionNumber: ${{ needs.generate_version_number.outputs.VersionNumber }}
       environment: dev
     secrets:

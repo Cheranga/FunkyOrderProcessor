@@ -37,17 +37,17 @@ jobs:
     runs-on: ubuntu-latest
     environment: ${{ inputs.environment }}
     steps:      
-#      - name: Download deployment artifacts
-#        uses: actions/download-artifact@v4
-#        with:
-#          name: deploy
-#          path: deploy
-#          
-#      - name: Download Application Binaries
-#        uses: actions/download-artifact@v4
-#        with:
-#          name: ${{ inputs.versionNumber }}
-#          path: ${{ inputs.versionNumber }}
+      - name: Download deployment artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: deploy
+          path: deploy
+
+      - name: Download Application Binaries
+        uses: actions/download-artifact@v4
+        with:
+          name: ${{ inputs.versionNumber }}
+          path: ${{ inputs.versionNumber }}
           
       - name: Login to Azure
         uses: azure/login@v2
