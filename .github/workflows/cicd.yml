@@ -1,0 +1,25 @@
+﻿name: cicd
+concurrency: cicd
+
+on:
+  pull_request:
+    branches: ['main']
+  workflow_dispatch:
+    inputs:
+      environment:
+        required: true
+        type: choice
+        options: [dev, qa, prod]
+        description: "Select environment to deploy to"
+
+jobs:
+  deploy:
+    uses: ./.github/workflows/deploy.yml
+    with:
+      environment: ${{ github.event.inputs.environment || 'dev' }}
+      app_name: orderproc
+      deployment_name: orderproc-${{ github.event.inputs.environment || 'dev' }}
+      function_app_name: cchat-fn-orderproc-${{ github.event.inputs.environment || 'dev' }}
+    secrets:
+      AZURE_CREDENTIALS: ${{ secrets.AZURE_CREDENTIALS }}
+      SUBSCRIPTION_ID: ${{ secrets.SUBSCRIPTION_ID }}
