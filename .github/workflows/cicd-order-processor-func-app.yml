@@ -3,7 +3,7 @@ concurrency: Order Processor Func App Create Release for PR
 
 on:
   pull_request:
-    branches: [ 'mainblah' ]
+    branches: [ 'main' ]
         
 jobs:
      
@@ -39,8 +39,5 @@ jobs:
       applicationName: orderproc
       location: australiasoutheast
       versionNumber: ${{ needs.generate_version_number.outputs.VersionNumber }}
-      environment: dev
-    secrets:
-      credentials: ${{ secrets.AZURE_CREDENTIALS }}
-      subscriptionId: ${{ secrets.SUBSCRIPTION_ID }}              
+      environment: dev              
           

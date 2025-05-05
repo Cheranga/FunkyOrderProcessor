@@ -23,19 +23,12 @@ on:
         required: true
         description: Version number to track deployments
         
-    secrets:
-      subscriptionId:
-        required: true
-        description: Azure subscription id
-      credentials:
-        required: true
-        description: Azure service principal details used to provision Azure resources
-        
 jobs:
   provisioning:
     name: Provisioning
     runs-on: ubuntu-latest
-    environment: ${{ inputs.environment }}
+    environment:
+      name: ${{ inputs.environment }}
     steps:      
       - name: Download deployment artifacts
         uses: actions/download-artifact@v4
@@ -52,7 +45,7 @@ jobs:
       - name: Login to Azure
         uses: azure/login@v2
         with:
-          creds: ${{ secrets.credentials }}
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
           
       - name: Provision Azure Resources
         uses: azure/arm-deploy@v2
@@ -61,7 +54,7 @@ jobs:
           deploymentName: "${{ env.ARTIFACT_NAME }}${{inputs.environment}}"
           scope: subscription
           region: ${{ inputs.location }}
-          subscriptionId: ${{ secrets.subscriptionId }}
+          subscriptionId: ${{ secrets.SUBSCRIPTION_ID }}
           template: deploy/main.bicep
           parameters: >
             appName=${{ inputs.applicationName }}
@@ -69,72 +62,16 @@ jobs:
             environment=${{ inputs.environment }}
             location=${{ inputs.location }}
             
-      - name: Create zipped function app package
-        run: |
-          cd ${{ inputs.versionNumber }}
-          zip -r ../functionapp.zip .
-          cd ..
-
-      - name: Verify function app package exists
-        run: |
-          if [ ! -f "functionapp.zip" ]; then
-            echo "❌ functionapp.zip not found!"
-            exit 1
-          fi
-#    
-#      - name: Deploy using Zip Deploy
-#        run: |
-#          az functionapp deployment source config-zip \
-#          --resource-group cchat-rg-${{ inputs.applicationName }}-${{ inputs.environment }} \
-#          --name cchat-fn-${{ inputs.applicationName }}-${{ inputs.environment }} \
-#          --src functionapp.zip
-            
-            
-#      - name: "Deploy Azure Function App"
-#        uses: azure/webapps-deploy@v2
-#        with:
-#          app-name: 'cchat-fn-${{ inputs.applicationName }}-${{ inputs.environment }}'
-#          package: ${{ inputs.versionNumber }}            
-            
-#      - name: Zip function output
-#        run: |
-#          cd artifacts/${{ inputs.versionNumber }}
-#          zip -r ../functionapp.zip .
-#          cd .. 
-#          
-#      - name: Verify zip file exists
-#        run: |
-#          if [ ! -f "artifacts/functionapp.zip" ]; then
-#          echo "Error: functionapp.zip does not exist"
-#          exit 1
-#          fi          
-#            
-#      - name: Deploy via Zip
-#        run: |
-#          az functionapp deployment source config-zip \
-#          --resource-group cchat-rg-${{ inputs.applicationName }}-${{ inputs.environment }} \
-#          --name cchat-fn-${{ inputs.applicationName }}-${{ inputs.environment }} \
-#          --src artifacts/functionapp.zip \
-#          --timeout 600
-            
-      - name: Deploy Function App Package
+      - name: 'Run Azure Functions Action'
         uses: Azure/functions-action@v1
         with:
-          app-name: "cchat-fn-${{ inputs.applicationName }}-${{ inputs.environment }}"
-          package: functionapp.zip  
-          slot-name: 'production'
-            
-#      - name: "Deploy Azure Function App"
-#        uses: azure/webapps-deploy@v2
-#        with:
-#          app-name: "cchat-fn-${{ inputs.applicationName }}-${{ inputs.environment }}"
-#          package: ${{ inputs.versionNumber }}
-          
-      
+          app-name: 'cchat-fn-${{ inputs.applicationName }}-${{ inputs.environment }}'
+          slot-name: 'Production'
+          package: '${{ needs.generate_version_number.outputs.VersionNumber }}'
+
       - name: Logout from Azure
         uses: azure/cli@v2
         with:
           inlineScript:
-            az logout                  
-            
+            az logout            
             
