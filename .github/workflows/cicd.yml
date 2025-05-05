@@ -1,4 +1,5 @@
-﻿name: Deploy Function App via Matrix
+﻿name: cicd
+concurrency: cicd
 
 on:
   pull_request:
@@ -17,6 +18,8 @@ jobs:
       app_name: orderproc
       deployment_name: orderproc-${{ matrix.env }}
       function_app_name: cchat-fn-orderproc-${{ matrix.env }}
+      project_path: OrderProcessorFuncApp/OrderProcessorFuncApp.csproj
+      deploy_templates_path: .github/bicep-order-processor-func-app
     secrets:
       AZURE_CREDENTIALS: ${{ secrets.AZURE_CREDENTIALS }}
       SUBSCRIPTION_ID: ${{ secrets.SUBSCRIPTION_ID }}

@@ -15,16 +15,18 @@ on:
       function_app_name:
         required: true
         type: string
+      project_path:
+        required: true
+        type: string
+      deploy_templates_path:
+        required: true
+        type: string
 
     secrets:
       AZURE_CREDENTIALS:
         required: true
       SUBSCRIPTION_ID:
         required: true
-
-env:
-  project-path: OrderProcessorFuncApp/OrderProcessorFuncApp.csproj
-  deploy-templates-path: ./.github/bicep-order-processor-func-app
 
 jobs:
   deploy:
@@ -45,7 +47,7 @@ jobs:
         run: echo "BUILD_VERSION=$(date +%Y%m%d%H%M)" >> $GITHUB_ENV
 
       - name: Create Artifact
-        run: dotnet publish ${{ env.project-path }} -c Release -o ${{ env.BUILD_VERSION }}
+        run: dotnet publish ${{ inputs.project_path }} -c Release -o ${{ env.BUILD_VERSION }}
 
       - name: Login to Azure
         uses: azure/login@v2
@@ -60,7 +62,7 @@ jobs:
           scope: subscription
           region: australiasoutheast
           subscriptionId: ${{ secrets.SUBSCRIPTION_ID }}
-          template: ${{ env.deploy-templates-path }}/main.bicep
+          template: ${{ inputs.deploy_templates_path }}/main.bicep
           parameters: >
             appName=${{ inputs.app_name }}
             version=${{ env.BUILD_VERSION }}
