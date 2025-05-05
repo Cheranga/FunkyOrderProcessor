@@ -41,7 +41,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: ${{ inputs.versionNumber }}
-          path: ${{ inputs.versionNumber }}/**
+          path: ${{ inputs.versionNumber }}
           if-no-files-found: error
 
       - name: Publish Artifact - Templates
