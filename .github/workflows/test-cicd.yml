@@ -2,6 +2,8 @@
 concurrency: testcicd
 
 on:
+  pull_request:
+    branches: [ 'mainblah' ]
   workflow_dispatch:
     
 env:

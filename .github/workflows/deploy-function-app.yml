@@ -47,7 +47,10 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: ${{ inputs.versionNumber }}
-          path: output/${{ inputs.versionNumber }}
+          path: ${{ inputs.versionNumber }}
+          
+      - name: Unzip downloaded archive
+        run: unzip ${{ inputs.versionNumber }}.zip -d extracted-app          
           
       - name: Login to Azure
         uses: azure/login@v2
@@ -74,7 +77,7 @@ jobs:
         with:
           app-name: 'cchat-fn-${{ inputs.applicationName }}-${{ inputs.environment }}'
           slot-name: 'Production'
-          package: 'output/${{ inputs.versionNumber }}.zip'
+          package: 'extracted-app'
 
       - name: Logout from Azure
         uses: azure/cli@v2
