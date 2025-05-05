@@ -1,0 +1,66 @@
+﻿name: testcicd
+concurrency: testcicd
+
+on:
+  pull_request:
+    branches: [ 'main' ]
+
+jobs:  
+  generate_version_number:
+    name: Generate Version Number
+    runs-on: ubuntu-latest
+    steps:
+      - name: Build Version Number
+        shell: bash
+        run: |
+          echo "BUILD_VERSION=$(date +%Y%m%d%H%M)" >> $GITHUB_ENV
+    
+    outputs:
+      VersionNumber: ${{ env.BUILD_VERSION }}
+  
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: |
+            8.0.x     
+
+      - name: Create Artifact
+        shell: bash
+        run: dotnet publish -c Release ${{ inputs.project-path }} -o ${{ inputs.versionNumber }}
+
+      - name: Publish Artifact - App
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ inputs.versionNumber }}
+          path: ${{ inputs.versionNumber }}/**
+          if-no-files-found: error
+
+      - name: Publish Artifact - Templates
+        uses: actions/upload-artifact@v4
+        with:
+          name: deploy
+          path: ${{ inputs.deploy-templates-path }}
+          if-no-files-found: error
+  
+#  DEV:
+#    name: DEV
+#    needs:
+#      - generate_version_number
+#      - build
+#    uses: ./.github/workflows/deploy-function-app.yml
+#    with:
+#      applicationName: orderproc
+#      location: australiasoutheast
+#      versionNumber: ${{ needs.generate_version_number.outputs.VersionNumber }}
+#      environment: dev
+#    secrets:
+#      credentials: ${{ secrets.AZURE_CREDENTIALS }}
+#      subscriptionId: ${{ secrets.SUBSCRIPTION_ID }}              
+          
