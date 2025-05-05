@@ -71,9 +71,7 @@ jobs:
         with:
           app-name: 'cchat-fn-orderproc-dev'
           slot-name: 'Production'
-          package: '${{ needs.generate_version_number.outputs.VersionNumber }}'
-
-            
+          package: '${{ needs.generate_version_number.outputs.VersionNumber }}'            
 
       - name: Logout from Azure
         uses: azure/cli@v2
