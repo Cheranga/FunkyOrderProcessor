@@ -31,8 +31,8 @@ jobs:
       - generate_version_number
     uses: ./.github/workflows/build-and-publish-artifacts.yml
     with:
-        project-path: ${{ env.project-path }}
-        deploy-templates-path: ${{ env.deploy-templates-path }}
+        project-path: '${{ env.project-path }}'
+        deploy-templates-path: '${{ env.deploy-templates-path }}'
         versionNumber: ${{ needs.generate_version_number.outputs.VersionNumber }}
           
   DEV:
