@@ -74,7 +74,7 @@ jobs:
         with:
           app-name: 'cchat-fn-${{ inputs.applicationName }}-${{ inputs.environment }}'
           slot-name: 'Production'
-          package: '${{ needs.generate_version_number.outputs.VersionNumber }}'
+          package: '${{ inputs.versionNumber }}'
 
       - name: Logout from Azure
         uses: azure/cli@v2
