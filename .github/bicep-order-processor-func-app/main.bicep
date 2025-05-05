@@ -122,7 +122,6 @@ module rbacSetting 'rbac/template.bicep' = {
     storageName: sgName
   }
   dependsOn: [
-    app
     storageAccount    
   ]
 }
