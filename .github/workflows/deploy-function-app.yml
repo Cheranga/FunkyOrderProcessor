@@ -47,7 +47,7 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: ${{ inputs.versionNumber }}
-          path: ${{ inputs.versionNumber }}
+          path: output/${{ inputs.versionNumber }}
           
       - name: Login to Azure
         uses: azure/login@v2
@@ -74,7 +74,7 @@ jobs:
         with:
           app-name: 'cchat-fn-${{ inputs.applicationName }}-${{ inputs.environment }}'
           slot-name: 'Production'
-          package: '${{ inputs.versionNumber }}'
+          package: 'output/${{ inputs.versionNumber }}'
 
       - name: Logout from Azure
         uses: azure/cli@v2
