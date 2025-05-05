@@ -4,6 +4,11 @@ concurrency: testcicd
 on:
   pull_request:
     branches: [ 'main' ]
+    
+env:
+ project-path: OrderProcessorFuncApp/OrderProcessorFuncApp.csproj
+ deploy-templates-path: ./.github/bicep-order-processor-func-app
+  
 
 jobs:  
   generate_version_number:
@@ -20,6 +25,8 @@ jobs:
   
   build:
     name: Build
+    needs:
+      - generate_version_number
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -33,20 +40,20 @@ jobs:
 
       - name: Create Artifact
         shell: bash
-        run: dotnet publish -c Release ${{ inputs.project-path }} -o ${{ inputs.versionNumber }}
+        run: dotnet publish ${{ env.project-path }} -c Release -o ${{ needs.generate_version_number.outputs.VersionNumber }}
 
       - name: Publish Artifact - App
         uses: actions/upload-artifact@v4
         with:
-          name: ${{ inputs.versionNumber }}
-          path: ${{ inputs.versionNumber }}/**
+          name: ${{ needs.generate_version_number.outputs.VersionNumber }}
+          path: ${{ needs.generate_version_number.outputs.VersionNumber }}/**
           if-no-files-found: error
 
       - name: Publish Artifact - Templates
         uses: actions/upload-artifact@v4
         with:
           name: deploy
-          path: ${{ inputs.deploy-templates-path }}
+          path: ${{ env.deploy-templates-path }}
           if-no-files-found: error
   
 #  DEV:
