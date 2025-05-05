@@ -50,7 +50,7 @@ jobs:
           path: app/${{ inputs.versionNumber }}
           
       - name: Show downloaded file
-        run: cat app/${{ inputs.versionNumber }}          
+        run: ls -R app/${{ inputs.versionNumber }}/
           
 #      - name: Unzip downloaded archive
 #        run: unzip ${{ inputs.versionNumber }} -d extracted-app          
